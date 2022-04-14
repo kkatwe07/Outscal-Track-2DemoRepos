@@ -1,27 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
 
     public Rigidbody2D rb2d;
 
+    public SpriteRenderer FlipX;
+
     public GameObject GameWonPanel;
+
+    public GameObject GameOverPanel;
 
     public GameObject PauseMenuPanel;
 
-    private bool isGameWon = false;
+    private bool isGameOver = false;
 
     private bool isPaused = false;
 
     public float speed;
     
-    void Start()
-    {
-        
-    }
-
+    
 
     void Update()
     {
@@ -34,17 +35,31 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
+    public void ResumeGame()
+    {
+        PauseMenuPanel.SetActive(false);
+        isPaused = false;
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     private void Move()
     {
-        if (isGameWon || isPaused) { return; }
+        if (isGameOver || isPaused) { return; }
 
         if (Input.GetAxis("Horizontal") > 0)
         {
             rb2d.velocity = new Vector2(speed, 0f);
+            FlipX.flipX = false;
         }
         else if (Input.GetAxis("Horizontal") < 0)
         {
             rb2d.velocity = new Vector2(-speed, 0f);
+            FlipX.flipX = true;
+            
         }
         else if (Input.GetAxis("Vertical") > 0)
         {
@@ -60,15 +75,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("Door"))
+        if (other.CompareTag("Door"))
         {
             GameWonPanel.SetActive(true);
-            isGameWon = true;
-
-            //Debug.Log("Level Won!!");
+            isGameOver = true;
+            Debug.Log("Level Complete!!");
         }
-        
+
+        else if (other.CompareTag("Enemy"))
+        {
+            GameOverPanel.SetActive(true);
+            isGameOver = true;
+            Debug.Log("Level Lost!!");
+        }
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
