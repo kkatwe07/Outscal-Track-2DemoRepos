@@ -7,6 +7,14 @@ public class PlayerMovement : MonoBehaviour
 
     public Rigidbody2D rb2d;
 
+    public GameObject GameWonPanel;
+
+    public GameObject PauseMenuPanel;
+
+    private bool isGameWon = false;
+
+    private bool isPaused = false;
+
     public float speed;
     
     void Start()
@@ -17,11 +25,19 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            PauseMenuPanel.SetActive(true);
+            isPaused = true;
+        }
+
         Move();
     }
 
     private void Move()
     {
+        if (isGameWon || isPaused) { return; }
+
         if (Input.GetAxis("Horizontal") > 0)
         {
             rb2d.velocity = new Vector2(speed, 0f);
@@ -48,7 +64,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.CompareTag("Door"))
         {
-            Debug.Log("Level Won!!");
+            GameWonPanel.SetActive(true);
+            isGameWon = true;
+
+            //Debug.Log("Level Won!!");
         }
         
     }
