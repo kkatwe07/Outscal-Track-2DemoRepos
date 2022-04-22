@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isPaused = false;
 
-    public float speed;
+    public float speed = 5;
     
     
 
@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
         {
             PauseMenuPanel.SetActive(true);
             isPaused = true;
+            Time.timeScale = 0;
         }
 
         Move();
@@ -39,11 +40,21 @@ public class PlayerMovement : MonoBehaviour
     {
         PauseMenuPanel.SetActive(false);
         isPaused = false;
+        Time.timeScale = 1;
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("Start");
     }
 
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     private void Move()
@@ -91,6 +102,8 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("Level Lost!!");
         }
     }
+
+
 
     public void QuitGame()
     {
